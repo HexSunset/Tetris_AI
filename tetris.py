@@ -5,6 +5,7 @@
 
 import random, time, pygame, sys
 from pygame.locals import *
+from tetrisAI import *
 
 FPS = 25
 WINDOWWIDTH = 640
