@@ -195,8 +195,11 @@ def runGame():
     while True: # game loop
         if fallingPiece == None:
             # No falling piece in play, so start a new piece at the top
-            fallingPiece = nextPiece
+            fallingPiece = nextPiece()
             nextPiece = getNewPiece()
+            # et kaks sama juppi jarjest ei tuleks
+            while nextPiece != fallingPiece():
+                nextPiece = getNewPiece()
             lastFallTime = time.time() # reset lastFallTime
 
             if not isValidPosition(board, fallingPiece):
