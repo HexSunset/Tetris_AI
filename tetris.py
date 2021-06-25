@@ -214,10 +214,17 @@ def runGame():
         elif gh.movePieceToPosition(fallingPiece['x']) == 1:
             movingRight = True
             movingDown = True
-        else: #jupp on juba oiges kohas
+        else: # jupp on juba oiges kohas
             if gh.rotatePiece(fallingPiece['rotation'], fallingPiece) != 0:
                 fallingPiece['rotation'] += gh.rotatePiece(fallingPiece['rotation'], fallingPiece)
-            else: #jupp on oiges kohas ja voib alla kukutada
+                if not isValidPosition(board, fallingPiece): # kui jupp pöörab end mängulaualt välja
+                    if fallingPiece['x'] < BOARDWIDTH/2: # kui on vasakul pool mängulauda
+                        while not isValidPosition(board, fallingPiece):
+                            fallingPiece['x'] += 1
+                    else: # jupp on paremal pool mängulauda
+                        while not isValidPosition(board, fallingPiece):
+                            fallingPiece['x'] -= 1
+            else: # jupp on oiges kohas ja voib alla kukutada
                     movingDown = False
                     movingLeft = False
                     movingRight = False
@@ -231,10 +238,23 @@ def runGame():
                     fallingPiece = None
         if movingDown:
             fallingPiece['y'] += 1
+            if not isValidPosition(board, fallingPiece):
+                fallingPiece['y'] -= 1
+                addToBoard(board, fallingPiece)
+                score += removeCompleteLines(board)
+                level, fallFreq = calculateLevelAndFallFreq(score)
+                fallingPiece = None
+                movingDown = False
+                movingLeft = False
+                movingRight = False
         if movingRight:
             fallingPiece['x'] += 1
+            if not isValidPosition(board, fallingPiece):
+                fallingPiece['x'] -= 1
         if movingLeft:
             fallingPiece['x'] -= 1
+            if not isValidPosition(board, fallingPiece):
+                fallingPiece['x'] += 1
         movingDown = False
         movingLeft = False
         movingRight = False
