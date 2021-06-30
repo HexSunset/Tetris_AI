@@ -8,31 +8,78 @@ class gameHandler:
         self.desiredRot = random.randint(0, 4) % len(piece['shape'])+1
         self.piece = piece
 
-    def movePieceToPosition(self, pieceX): # tagastab -1 kui on vaja liikuda vasakule, 1 kui on liikuda paremale ja 0 kui on jupp õiges kohas.
+    def movePieceToPosition(self, pieceX): #returns -1 if moving left, 1 if moving right, and 0 if the x coordinate is correct
         if pieceX > self.desiredX:
             return -1
         elif pieceX < self.desiredX:
             return 1
         else:
             return 0
-    def rotatePiece(self, pieceRotation, piece): # tagastab -1 kui on vaja pöörata ühele poole, 1 kui on vaja pöörata teisele poole
+    def rotatePiece(self, pieceRotation, piece): #returns -1 if rotating left, 1 if rotating right, and 0 if its correctly rotated
         if piece['shape'] == 'O':
             return 0
         if self.desiredRot == pieceRotation:
             return 0
-        # nelja võimaliku rotatsiooni puhul on võimalik alati tahetud rotatsioonini kahe pöördega saada
-        # kolme ja vähema puhul kulub selleks ainult üks
         elif self.desiredRot - pieceRotation < 3:
             return int(abs(self.desiredRot - pieceRotation) / (self.desiredRot - pieceRotation))
         else:
             return int(abs(self.desiredRot - pieceRotation) / -(self.desiredRot - pieceRotation))
     def setDesiredX(self):
-        self.desiredX = random.randint(-1, BOARDWIDTH-1) #selle leiab hiljem AIga
-        #               ^ lahutan vägivaldselt 4 siit, selle muudab niikuinii pärast ära kui AI implementida
+        self.desiredX = random.randint(-1, BOARDWIDTH-1)
     def setDesiredRot(self):
-        self.desiredRot = random.randint(0, 4) % len(self.piece['shape']) # leitud on jääk, juhul kui jupil on vähem kui 4 võimalikku rotatsiooni
+        self.desiredRot = random.randint(0, 4) % len(self.piece['shape'])
     def newPiece(self, newPiece):
         self.setDesiredX()
         self.setDesiredRot()
         self.piece = newPiece
+
+class boardEval:
+    
+    COMPLETELINEWEIGHT = 10
+    SPIKINESSWEIGHT = -0.2
+    HOLEWEIGHT = -1
+    
+    def getColumnHeight(board, x):
+        highestBlock = 0
+        for y in range(len(board[x])):
+            if board[x][y] == 'O':
+                highestBlock = y
+        return highestBlock
+    
+    def getNumberOfHoles(self, board, x):
+        columnHeight = self.getColumnHeight(board, x)
+        numberOfHoles = 0
+        for y in range(columnHeight):
+            if board[x][y] == BLANK:
+                numberOfHoles += 1
+        return numberOfHoles
+
+    def evalBoardState(self, board):
+        currentEval = 0
+        for y in range(BOARDHEIGHT):
+            if isCompleteLine(board, y):
+                currentEval += boardEval.COMPLETELINEWEIGHT #add to currentEval if there are completed lines
+
+        averageColWidth = 0
+        for x in range(BOARDWIDTH):
+            averageColWidth += self.getColumnHeight(board, x)
+        averageColWidth /= BOARDWIDTH
+
+        for x in range(BOARDWIDTH):
+            currentEval += abs(self.getColumnHeight(board, x) - averageColWidth) * boardEval.SPIKINESSWEIGHT #subtract from currentEval based on the "spikiness" of the board
+        
+        numberOfHoles = 0
+        for x in range(BOARDWIDTH):
+            numberOfHoles += self.getNumberOfHoles(board, x)
+        currentEval += numberOfHoles * boardEval.HOLEWEIGHT
+        
+        return currentEval
+
+        
+
+        
+
+
+
+
 
