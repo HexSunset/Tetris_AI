@@ -224,7 +224,6 @@ def runGame():
             gh.newPiece(fallingPiece)
 
         checkForQuit()
-        print(manual_mode)
         if manual_mode == False:
             if gh.movePieceToPosition(fallingPiece['x']) == -1:
                 movingLeft = True
