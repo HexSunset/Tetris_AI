@@ -25,21 +25,28 @@ TOPMARGIN = WINDOWHEIGHT - (BOARDHEIGHT * BOXSIZE) - 5
 WHITE       = (255, 255, 255)
 GRAY        = (185, 185, 185)
 BLACK       = (  0,   0,   0)
+
 RED         = (155,   0,   0)
 LIGHTRED    = (175,  20,  20)
 GREEN       = (  0, 155,   0)
 LIGHTGREEN  = ( 20, 175,  20)
 BLUE        = (  0,   0, 155)
 LIGHTBLUE   = ( 20,  20, 175)
+CYAN        = (0, 222, 222)
+LIGHTCYAN   = (0, 255, 255)
 YELLOW      = (155, 155,   0)
 LIGHTYELLOW = (175, 175,  20)
+ORANGE      = (255, 127, 0)
+LIGHTORANGE = (255, 165, 0)
+PURPLE      = (111, 0, 128)
+LIGHTPURPLE = (128, 0, 128)
 
 BORDERCOLOR = BLUE
 BGCOLOR = BLACK
 TEXTCOLOR = WHITE
 TEXTSHADOWCOLOR = GRAY
-COLORS      = (     BLUE,      GREEN,      RED,      YELLOW)
-LIGHTCOLORS = (LIGHTBLUE, LIGHTGREEN, LIGHTRED, LIGHTYELLOW)
+COLORS      = (GREEN, RED, BLUE, ORANGE, CYAN, YELLOW, PURPLE)
+LIGHTCOLORS = (LIGHTGREEN, LIGHTRED, LIGHTBLUE, LIGHTORANGE, LIGHTCYAN, LIGHTYELLOW, LIGHTPURPLE)
 assert len(COLORS) == len(LIGHTCOLORS) # each color must have light color
 
 TEMPLATEWIDTH = 5
@@ -339,7 +346,7 @@ def getNewPiece():
                 'rotation': random.randint(0, len(PIECES[shape]) - 1),
                 'x': int(BOARDWIDTH / 2) - int(TEMPLATEWIDTH / 2),
                 'y': -2, # start it above the board (i.e. less than 0)
-                'color': random.randint(0, len(COLORS)-1)}
+                'color' : list(PIECES.keys()).index(shape)}
     return newPiece
 
 
