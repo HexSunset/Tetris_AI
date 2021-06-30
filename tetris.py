@@ -162,7 +162,6 @@ PIECES = {'S': S_SHAPE_TEMPLATE,
           'O': O_SHAPE_TEMPLATE,
           'T': T_SHAPE_TEMPLATE}
 
-
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT, BIGFONT
     pygame.init()
@@ -199,68 +198,40 @@ def runGame():
     fallingPiece = getNewPiece()
     nextPiece = getNewPiece()
 
+    gh = gameHandler(fallingPiece)
+
     while True: # game loop
         if fallingPiece == None:
             # No falling piece in play, so start a new piece at the top
             fallingPiece = nextPiece
             nextPiece = getNewPiece()
+            # et kaks sama juppi jarjest ei tuleks
+            while nextPiece == fallingPiece:
+                nextPiece = getNewPiece()
             lastFallTime = time.time() # reset lastFallTime
 
             if not isValidPosition(board, fallingPiece):
                 return # can't fit a new piece on the board, so game over
+            gh.newPiece(fallingPiece)
 
         checkForQuit()
-        for event in pygame.event.get(): # event handling loop
-            if event.type == KEYUP:
-                if (event.key == K_p):
-                    # Pausing the game
-                    DISPLAYSURF.fill(BGCOLOR)
-                    pygame.mixer.music.stop()
-                    showTextScreen('Paused') # pause until a key press
-                    pygame.mixer.music.play(-1, 0.0)
-                    lastFallTime = time.time()
-                    lastMoveDownTime = time.time()
-                    lastMoveSidewaysTime = time.time()
-                elif (event.key == K_LEFT or event.key == K_a):
-                    movingLeft = False
-                elif (event.key == K_RIGHT or event.key == K_d):
-                    movingRight = False
-                elif (event.key == K_DOWN or event.key == K_s):
-                    movingDown = False
-
-            elif event.type == KEYDOWN:
-                # moving the piece sideways
-                if (event.key == K_LEFT or event.key == K_a) and isValidPosition(board, fallingPiece, adjX=-1):
-                    fallingPiece['x'] -= 1
-                    movingLeft = True
-                    movingRight = False
-                    lastMoveSidewaysTime = time.time()
-
-                elif (event.key == K_RIGHT or event.key == K_d) and isValidPosition(board, fallingPiece, adjX=1):
-                    fallingPiece['x'] += 1
-                    movingRight = True
-                    movingLeft = False
-                    lastMoveSidewaysTime = time.time()
-
-                # rotating the piece (if there is room to rotate)
-                elif (event.key == K_UP or event.key == K_w):
-                    fallingPiece['rotation'] = (fallingPiece['rotation'] + 1) % len(PIECES[fallingPiece['shape']])
-                    if not isValidPosition(board, fallingPiece):
-                        fallingPiece['rotation'] = (fallingPiece['rotation'] - 1) % len(PIECES[fallingPiece['shape']])
-                elif (event.key == K_q): # rotate the other direction
-                    fallingPiece['rotation'] = (fallingPiece['rotation'] - 1) % len(PIECES[fallingPiece['shape']])
-                    if not isValidPosition(board, fallingPiece):
-                        fallingPiece['rotation'] = (fallingPiece['rotation'] + 1) % len(PIECES[fallingPiece['shape']])
-
-                # making the piece fall faster with the down key
-                elif (event.key == K_DOWN or event.key == K_s):
-                    movingDown = True
-                    if isValidPosition(board, fallingPiece, adjY=1):
-                        fallingPiece['y'] += 1
-                    lastMoveDownTime = time.time()
-
-                # move the current piece all the way down
-                elif event.key == K_SPACE:
+        if gh.movePieceToPosition(fallingPiece['x']) == -1:
+            movingLeft = True
+            movingDown = True
+        elif gh.movePieceToPosition(fallingPiece['x']) == 1:
+            movingRight = True
+            movingDown = True
+        else: # jupp on juba oiges kohas
+            if gh.rotatePiece(fallingPiece['rotation'], fallingPiece) != 0:
+                fallingPiece['rotation'] += gh.rotatePiece(fallingPiece['rotation'], fallingPiece)
+                if not isValidPosition(board, fallingPiece): # kui jupp pöörab end mängulaualt välja
+                    if fallingPiece['x'] < BOARDWIDTH/2: # kui on vasakul pool mängulauda
+                        while not isValidPosition(board, fallingPiece):
+                            fallingPiece['x'] += 1
+                    else: # jupp on paremal pool mängulauda
+                        while not isValidPosition(board, fallingPiece):
+                            fallingPiece['x'] -= 1
+            else: # jupp on oiges kohas ja voib alla kukutada
                     movingDown = False
                     movingLeft = False
                     movingRight = False
@@ -268,32 +239,32 @@ def runGame():
                         if not isValidPosition(board, fallingPiece, adjY=i):
                             break
                     fallingPiece['y'] += i - 1
-
-        # handle moving the piece because of user input
-        if (movingLeft or movingRight) and time.time() - lastMoveSidewaysTime > MOVESIDEWAYSFREQ:
-            if movingLeft and isValidPosition(board, fallingPiece, adjX=-1):
-                fallingPiece['x'] -= 1
-            elif movingRight and isValidPosition(board, fallingPiece, adjX=1):
-                fallingPiece['x'] += 1
-            lastMoveSidewaysTime = time.time()
-
-        if movingDown and time.time() - lastMoveDownTime > MOVEDOWNFREQ and isValidPosition(board, fallingPiece, adjY=1):
+                    addToBoard(board, fallingPiece)
+                    score += removeCompleteLines(board)
+                    level, fallFreq = calculateLevelAndFallFreq(score)
+                    fallingPiece = None
+        if movingDown:
             fallingPiece['y'] += 1
-            lastMoveDownTime = time.time()
-
-        # let the piece fall if it is time to fall
-        if time.time() - lastFallTime > fallFreq:
-            # see if the piece has landed
-            if not isValidPosition(board, fallingPiece, adjY=1):
-                # falling piece has landed, set it on the board
+            if not isValidPosition(board, fallingPiece):
+                fallingPiece['y'] -= 1
                 addToBoard(board, fallingPiece)
                 score += removeCompleteLines(board)
                 level, fallFreq = calculateLevelAndFallFreq(score)
                 fallingPiece = None
-            else:
-                # piece did not land, just move the piece down
-                fallingPiece['y'] += 1
-                lastFallTime = time.time()
+                movingDown = False
+                movingLeft = False
+                movingRight = False
+        if movingRight:
+            fallingPiece['x'] += 1
+            if not isValidPosition(board, fallingPiece):
+                fallingPiece['x'] -= 1
+        if movingLeft:
+            fallingPiece['x'] -= 1
+            if not isValidPosition(board, fallingPiece):
+                fallingPiece['x'] += 1
+        movingDown = False
+        movingLeft = False
+        movingRight = False
 
         # drawing everything on the screen
         DISPLAYSURF.fill(BGCOLOR)
@@ -301,7 +272,7 @@ def runGame():
         drawStatus(score, level)
         drawNextPiece(nextPiece)
         if fallingPiece != None:
-            drawPiece(fallingPiece)
+            drawPiece(fallingPiece) #praegu on out-of-bounds probleem kerge, kui juppi poorata siis peab kontrollima kas ta ikka siis ka jaab in bounds
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
