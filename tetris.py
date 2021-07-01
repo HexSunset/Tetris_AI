@@ -272,6 +272,8 @@ def runGame():
                 fallingPiece['x'] -= 1
                 if not isValidPosition(board, fallingPiece):
                     fallingPiece['x'] += 1
+                    
+        # Manual controls mode
         else:
             for event in pygame.event.get(): # event handling loop
                 if event.type == KEYUP:
