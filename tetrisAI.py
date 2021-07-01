@@ -74,6 +74,31 @@ class boardEval:
         currentEval += numberOfHoles * boardEval.HOLEWEIGHT
         
         return currentEval
+    
+    # Returns the highest evaluated future state
+    def getFutureStates(self, piece, board):
+        evaluations = {}
+        bestState = None
+        for r in range(len(PIECES[piece['shape']])):
+            piece['rotation'] = r
+            for x in range(BOARDWIDTH):
+                newBoard = board
+                piece['x'] = x
+                for i in range(1, BOARDHEIGHT):
+                    if not isValidPosition(board, piece, adjY=i):
+                        break
+                piece['y'] += i - 1
+
+                addToBoard(newBoard, piece)
+                evaluations[(x, r)] = self.evalBoardState(newBoard)
+
+                if bestState == None:
+                    bestState = (x, r)
+                else:
+                    bestState = max(evaluations[bestState], evaluations[(x, r)])
+                    
+        return bestState
+
 
         
 
