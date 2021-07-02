@@ -1,5 +1,6 @@
 from tetris import *
 import random
+import copy
 
 class boardEval:
     
@@ -10,8 +11,8 @@ class boardEval:
     def getColumnHeight(self, board, x):
         highestBlock = 0
         for y in range(len(board[x])):
-            if board[x][y] == 'O':
-                highestBlock = y
+            if board[x][y] == '.':
+                highestBlock = y-1
         return highestBlock
     
     def getNumberOfHoles(self, board, x):
@@ -47,11 +48,14 @@ class boardEval:
     def returnBestState(self, piece, board):
         evaluations = {}
         bestState = None
-        for r in range(len(PIECES[piece['shape']])):
+        for r in range(len(PIECES[piece['shape']])): 
             piece['rotation'] = r
-            for x in range(BOARDWIDTH):
-                newBoard = board
+            for x in range(-2, BOARDWIDTH + 2):
+                newBoard = copy.deepcopy(board)
+                piece['y'] = -2
                 piece['x'] = x
+                if not isValidPosition(board, piece):
+                    continue
                 for i in range(1, BOARDHEIGHT):
                     if not isValidPosition(board, piece, adjY=i):
                         break
@@ -63,7 +67,8 @@ class boardEval:
                 if bestState == None:
                     bestState = (x, r)
                 else:
-                    bestState = max(evaluations)
+                    if evaluations[(x, r)] > evaluations[bestState]:
+                        bestState = (x, r)
                     
         return bestState
 
@@ -100,8 +105,9 @@ class gameHandler:
     def newPiece(self, newPiece, board):
         self.piece = newPiece
         self.board = board
-        self.setDesiredX()
-        self.setDesiredRot()
+        #self.setDesiredX()
+        #self.setDesiredRot()
+        self.desiredX, self.desiredRot = gameHandler.be.returnBestState(self.piece, self.board)
         
 
 
