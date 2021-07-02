@@ -5,7 +5,9 @@ A simple tetris AI written in Python. More specific info is available on the [wi
 We are planning on releasing the project as a pip package once the core features have been implemented.
 
 ## Dependencies
-`Pygame v2.0.0` 
+`Pygame v2.0.0`
+
+`Python 3.7`
 
 ## Usage
 Run `python tetris.py` to start the program with the AI enabled. To disable AI use the option `-noai`.
