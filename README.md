@@ -8,5 +8,5 @@ We are planning on releasing the project as a pip package once the core features
 `Pygame v2.0.0` 
 
 ## Usage
-Run `tetris.py` to start the program with the AI enabled. To disable AI use the option `-noai`.
+Run `python tetris.py` to start the program with the AI enabled. To disable AI use the option `-noai`.
 
