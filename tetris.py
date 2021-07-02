@@ -207,7 +207,7 @@ def runGame():
     fallingPiece = getNewPiece()
     nextPiece = getNewPiece()
 
-    gh = gameHandler(fallingPiece)
+    gh = gameHandler(fallingPiece, board)
 
     while True: # game loop
         if fallingPiece == None:
@@ -221,7 +221,7 @@ def runGame():
 
             if not isValidPosition(board, fallingPiece):
                 return # can't fit a new piece on the board, so game over
-            gh.newPiece(fallingPiece)
+            gh.newPiece(fallingPiece, board)
 
         checkForQuit()
         if manual_mode == False:
