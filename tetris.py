@@ -255,16 +255,16 @@ def runGame():
                         fallingPiece = None
             
             if movingRight:
-                fallingPiece['x'] += 1
-                if not isValidPosition(board, fallingPiece, adjX=1):
-                    fallingPiece['x'] -= 1
-            if movingLeft:
-                fallingPiece['x'] -= 1
-                if not isValidPosition(board, fallingPiece, adjX=-1):
+                if isValidPosition(board, fallingPiece, adjX=1):
                     fallingPiece['x'] += 1
+            if movingLeft:
+                if isValidPosition(board, fallingPiece, adjX=-1):
+                    fallingPiece['x'] -= 1
             if movingDown:
-                if not isValidPosition(board, fallingPiece, adjY=1):
+                if isValidPosition(board, fallingPiece, adjY=1) or fallingPiece['y'] <= -1:
                     fallingPiece['y'] += 1
+                else:
+                    fallingPiece = None
         # Manual controls mode
         else:
             for event in pygame.event.get(): # event handling loop
