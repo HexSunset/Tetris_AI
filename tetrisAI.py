@@ -48,6 +48,8 @@ class boardEval:
     def returnBestState(self, piece, board):
         evaluations = {}
         bestState = None
+        old_x = piece['x']
+        old_y = piece['y']
         for r in range(len(PIECES[piece['shape']])): 
             piece['rotation'] = r
             for x in range(-2, BOARDWIDTH + 2):
@@ -69,7 +71,8 @@ class boardEval:
                 else:
                     if evaluations[(x, r)] > evaluations[bestState]:
                         bestState = (x, r)
-        piece['x'] = 3
+        piece['x'] = old_x
+        piece['y'] = old_y
         return bestState
 
 class gameHandler:
