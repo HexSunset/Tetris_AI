@@ -253,26 +253,18 @@ def runGame():
                         score += removeCompleteLines(board)
                         level, fallFreq = calculateLevelAndFallFreq(score)
                         fallingPiece = None
-            if movingDown:
-                fallingPiece['y'] += 1
-                if not isValidPosition(board, fallingPiece):
-                    fallingPiece['y'] -= 1
-                    addToBoard(board, fallingPiece)
-                    score += removeCompleteLines(board)
-                    level, fallFreq = calculateLevelAndFallFreq(score)
-                    fallingPiece = None
-                    movingDown = False
-                    movingLeft = False
-                    movingRight = False
+            
             if movingRight:
                 fallingPiece['x'] += 1
-                if not isValidPosition(board, fallingPiece):
+                if not isValidPosition(board, fallingPiece, adjX=1):
                     fallingPiece['x'] -= 1
             if movingLeft:
                 fallingPiece['x'] -= 1
-                if not isValidPosition(board, fallingPiece):
+                if not isValidPosition(board, fallingPiece, adjX=-1):
                     fallingPiece['x'] += 1
-                    
+            if movingDown:
+                if not isValidPosition(board, fallingPiece, adjY=1):
+                    fallingPiece['y'] += 1
         # Manual controls mode
         else:
             for event in pygame.event.get(): # event handling loop

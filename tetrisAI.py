@@ -73,14 +73,13 @@ class boardEval:
         return bestState
 
 class gameHandler:
-
-    be = boardEval()
     
     def __init__(self, piece, board):
-        self.desiredX = random.randint(-1, BOARDWIDTH-1)
-        self.desiredRot = random.randint(0, 4) % len(piece['shape'])+1
+        self.be = boardEval()
         self.piece = piece
         self.board = board
+        self.desiredX = self.be.returnBestState(self.piece, self.board)[0]
+        self.desiredRot = self.be.returnBestState(self.piece, self.board)[1]
 
     def movePieceToPosition(self, pieceX): #returns -1 if moving left, 1 if moving right, and 0 if the x coordinate is correct
         if pieceX > self.desiredX:
@@ -99,15 +98,15 @@ class gameHandler:
         else:
             return int(abs(self.desiredRot - pieceRotation) / -(self.desiredRot - pieceRotation))
     def setDesiredX(self):
-        self.desiredX = gameHandler.be.returnBestState(self.piece, self.board)[0]
+        self.desiredX = self.be.returnBestState(self.piece, self.board)[0]
     def setDesiredRot(self):
-        self.desiredRot = gameHandler.be.returnBestState(self.piece, self.board)[1]
+        self.desiredRot = self.be.returnBestState(self.piece, self.board)[1]
     def newPiece(self, newPiece, board):
         self.piece = newPiece
         self.board = board
         #self.setDesiredX()
         #self.setDesiredRot()
-        self.desiredX, self.desiredRot = gameHandler.be.returnBestState(self.piece, self.board)
+        self.desiredX, self.desiredRot = self.be.returnBestState(self.piece, self.board)
         
 
 
