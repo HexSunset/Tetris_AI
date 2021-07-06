@@ -69,7 +69,7 @@ class boardEval:
                 else:
                     if evaluations[(x, r)] > evaluations[bestState]:
                         bestState = (x, r)
-                    
+        piece['x'] = 3
         return bestState
 
 class gameHandler:
