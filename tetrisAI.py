@@ -54,7 +54,7 @@ class boardEval:
             piece['rotation'] = r
             for x in range(-2, BOARDWIDTH + 2):
                 newBoard = copy.deepcopy(board)
-                piece['y'] = -2
+                piece['y'] = 0
                 piece['x'] = x
                 if not isValidPosition(board, piece):
                     continue
@@ -62,6 +62,14 @@ class boardEval:
                     if not isValidPosition(board, piece, adjY=i):
                         break
                 piece['y'] += i - 1
+                # DEBUG
+                #for i in range(len(board)-1, -1, -1):
+                #    print(board[i])
+                #print("-------------------------")
+                #for line in PIECES[piece['shape']][piece['rotation']]:
+                #    print(line)
+                #print(x, r)
+                #print("_____________________________________")
 
                 addToBoard(newBoard, piece)
                 evaluations[(x, r)] = self.evalBoardState(newBoard)
@@ -81,8 +89,7 @@ class gameHandler:
         self.be = boardEval()
         self.piece = piece
         self.board = board
-        self.desiredX = self.be.returnBestState(self.piece, self.board)[0]
-        self.desiredRot = self.be.returnBestState(self.piece, self.board)[1]
+        self.desiredX, self.desiredRot = self.be.returnBestState(piece, board)
 
     def movePieceToPosition(self, pieceX): #returns -1 if moving left, 1 if moving right, and 0 if the x coordinate is correct
         if pieceX > self.desiredX:

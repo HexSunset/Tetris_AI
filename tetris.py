@@ -208,6 +208,15 @@ def runGame():
     nextPiece = getNewPiece()
 
     gh = gameHandler(fallingPiece, board)
+    
+    # DEBUG
+    #for i in range(len(board)-1, -1, -1):
+    #    print(board[i])
+    #print("-------------------------")
+    #for line in PIECES[fallingPiece['shape']][fallingPiece['rotation']]:
+    #    print(line)
+    #print(gh.desiredX, gh.desiredRot)
+    #print("_____________________________________")
 
     while True: # game loop
         if fallingPiece == None:
@@ -222,37 +231,44 @@ def runGame():
             if not isValidPosition(board, fallingPiece):
                 return # can't fit a new piece on the board, so game over
             gh.newPiece(fallingPiece, board)
-
+        # DEBUG
+            #for i in range(len(board)-1, -1, -1):
+            #    print(board[i])
+            #print("-------------------------")
+            #for line in PIECES[fallingPiece['shape']][fallingPiece['rotation']]:
+            #    print(line)
+            #print(gh.desiredX, gh.desiredRot)
+            #print("_____________________________________")
         checkForQuit()
         if manual_mode == False:
-            if gh.movePieceToPosition(fallingPiece['x']) == -1:
+            if gh.rotatePiece(fallingPiece['rotation'], fallingPiece) != 0:
+                fallingPiece['rotation'] += gh.rotatePiece(fallingPiece['rotation'], fallingPiece)
+                if not isValidPosition(board, fallingPiece): # kui jupp pöörab end mängulaualt välja
+                    if fallingPiece['x'] < BOARDWIDTH/2: # kui on vasakul pool mängulauda
+                        while not isValidPosition(board, fallingPiece):
+                            fallingPiece['x'] += 1
+                    else: # jupp on paremal pool mängulauda
+                        while not isValidPosition(board, fallingPiece):
+                            fallingPiece['x'] -= 1
+            elif gh.movePieceToPosition(fallingPiece['x']) == -1:
                 movingLeft = True
                 movingDown = True
             elif gh.movePieceToPosition(fallingPiece['x']) == 1:
                 movingRight = True
                 movingDown = True
-            else: # jupp on juba oiges kohas
-                if gh.rotatePiece(fallingPiece['rotation'], fallingPiece) != 0:
-                    fallingPiece['rotation'] += gh.rotatePiece(fallingPiece['rotation'], fallingPiece)
-                    if not isValidPosition(board, fallingPiece): # kui jupp pöörab end mängulaualt välja
-                        if fallingPiece['x'] < BOARDWIDTH/2: # kui on vasakul pool mängulauda
-                            while not isValidPosition(board, fallingPiece):
-                                fallingPiece['x'] += 1
-                        else: # jupp on paremal pool mängulauda
-                            while not isValidPosition(board, fallingPiece):
-                                fallingPiece['x'] -= 1
-                else: # jupp on oiges kohas ja voib alla kukutada
-                        movingDown = False
-                        movingLeft = False
-                        movingRight = False
-                        for i in range(1, BOARDHEIGHT):
-                            if not isValidPosition(board, fallingPiece, adjY=i):
-                                break
-                        fallingPiece['y'] += i - 1
-                        addToBoard(board, fallingPiece)
-                        score += removeCompleteLines(board)
-                        level, fallFreq = calculateLevelAndFallFreq(score)
-                        fallingPiece = None
+
+            else: # jupp on oiges kohas ja voib alla kukutada
+                    movingDown = False
+                    movingLeft = False
+                    movingRight = False
+                    for i in range(1, BOARDHEIGHT):
+                        if not isValidPosition(board, fallingPiece, adjY=i):
+                            break
+                    fallingPiece['y'] += i - 1
+                    addToBoard(board, fallingPiece)
+                    score += removeCompleteLines(board)
+                    level, fallFreq = calculateLevelAndFallFreq(score)
+                    fallingPiece = None
             
             if movingRight:
                 if isValidPosition(board, fallingPiece, adjX=1):
@@ -264,6 +280,10 @@ def runGame():
                 if isValidPosition(board, fallingPiece, adjY=1) or fallingPiece['y'] <= -1:
                     fallingPiece['y'] += 1
                 else:
+                    # falling piece has landed, set it on the board
+                    addToBoard(board, fallingPiece)
+                    score += removeCompleteLines(board)
+                    level, fallFreq = calculateLevelAndFallFreq(score)
                     fallingPiece = None
         # Manual controls mode
         else:
