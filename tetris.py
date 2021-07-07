@@ -209,14 +209,7 @@ def runGame():
 
     gh = gameHandler(fallingPiece, board)
     
-    # DEBUG
-    #for i in range(len(board)-1, -1, -1):
-    #    print(board[i])
-    #print("-------------------------")
-    #for line in PIECES[fallingPiece['shape']][fallingPiece['rotation']]:
-    #    print(line)
-    #print(gh.desiredX, gh.desiredRot)
-    #print("_____________________________________")
+
 
     while True: # game loop
         if fallingPiece == None:
@@ -231,14 +224,7 @@ def runGame():
             if not isValidPosition(board, fallingPiece):
                 return # can't fit a new piece on the board, so game over
             gh.newPiece(fallingPiece, board)
-        # DEBUG
-            #for i in range(len(board)-1, -1, -1):
-            #    print(board[i])
-            #print("-------------------------")
-            #for line in PIECES[fallingPiece['shape']][fallingPiece['rotation']]:
-            #    print(line)
-            #print(gh.desiredX, gh.desiredRot)
-            #print("_____________________________________")
+
         checkForQuit()
         if manual_mode == False:
             if gh.rotatePiece(fallingPiece['rotation'], fallingPiece) != 0:

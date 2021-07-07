@@ -62,14 +62,7 @@ class boardEval:
                     if not isValidPosition(board, piece, adjY=i):
                         break
                 piece['y'] += i - 1
-                # DEBUG
-                #for i in range(len(board)-1, -1, -1):
-                #    print(board[i])
-                #print("-------------------------")
-                #for line in PIECES[piece['shape']][piece['rotation']]:
-                #    print(line)
-                #print(x, r)
-                #print("_____________________________________")
+
 
                 addToBoard(newBoard, piece)
                 evaluations[(x, r)] = self.evalBoardState(newBoard)
