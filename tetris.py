@@ -238,13 +238,9 @@ def runGame():
                             fallingPiece['x'] -= 1
             elif gh.movePieceToPosition(fallingPiece['x']) == -1:
                 movingLeft = True
-                movingDown = True
             elif gh.movePieceToPosition(fallingPiece['x']) == 1:
                 movingRight = True
-                movingDown = True
-
             else: # jupp on oiges kohas ja voib alla kukutada
-                    movingDown = False
                     movingLeft = False
                     movingRight = False
                     for i in range(1, BOARDHEIGHT):
@@ -259,11 +255,7 @@ def runGame():
             if movingRight:
                 if isValidPosition(board, fallingPiece, adjX=1):
                     fallingPiece['x'] += 1
-            if movingLeft:
-                if isValidPosition(board, fallingPiece, adjX=-1):
-                    fallingPiece['x'] -= 1
-            if movingDown:
-                if isValidPosition(board, fallingPiece, adjY=1) or fallingPiece['y'] <= -1:
+                if isValidPosition(board, fallingPiece, adjY=1):
                     fallingPiece['y'] += 1
                 else:
                     # falling piece has landed, set it on the board
@@ -271,6 +263,18 @@ def runGame():
                     score += removeCompleteLines(board)
                     level, fallFreq = calculateLevelAndFallFreq(score)
                     fallingPiece = None
+            if movingLeft:
+                if isValidPosition(board, fallingPiece, adjX=-1):
+                    fallingPiece['x'] -= 1
+                if isValidPosition(board, fallingPiece, adjY=1):
+                    fallingPiece['y'] += 1
+                else:
+                    # falling piece has landed, set it on the board
+                    addToBoard(board, fallingPiece)
+                    score += removeCompleteLines(board)
+                    level, fallFreq = calculateLevelAndFallFreq(score)
+                    fallingPiece = None
+                
         # Manual controls mode
         else:
             for event in pygame.event.get(): # event handling loop

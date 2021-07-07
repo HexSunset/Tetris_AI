@@ -5,15 +5,16 @@ import copy
 class boardEval:
     
     COMPLETELINEWEIGHT = 10
-    SPIKINESSWEIGHT = -0.2
-    HOLEWEIGHT = -1
-    
+    SPIKINESSWEIGHT = -0.1
+    HOLEWEIGHT = -0.2
+    HEIGHTWEIGHT = -100
+
     def getColumnHeight(self, board, x):
-        highestBlock = 0
         for y in range(len(board[x])):
-            if board[x][y] == '.':
-                highestBlock = y-1
-        return highestBlock
+            if board[x][y] != BLANK:
+                return BOARDHEIGHT - y
+        return 0
+        
     
     def getNumberOfHoles(self, board, x):
         columnHeight = self.getColumnHeight(board, x)
@@ -33,6 +34,7 @@ class boardEval:
         for x in range(BOARDWIDTH):
             averageColWidth += self.getColumnHeight(board, x)
         averageColWidth /= BOARDWIDTH
+        currentEval += boardEval.HEIGHTWEIGHT * averageColWidth
 
         for x in range(BOARDWIDTH):
             currentEval += abs(self.getColumnHeight(board, x) - averageColWidth) * boardEval.SPIKINESSWEIGHT #subtract from currentEval based on the "spikiness" of the board
