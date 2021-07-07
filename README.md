@@ -2,7 +2,7 @@
 A simple tetris AI written in Python. More specific info is available on the [wiki](https://github.com/pebblS/Tetris_AI/wiki).
 
 ## Installation
-We are planning on releasing the project as a pip package once the core features have been implemented.
+Follow the [guide](https://github.com/pebblS/Tetris_AI/wiki/Installation).
 
 ## Dependencies
 `Pygame v2.0.0`
@@ -10,5 +10,5 @@ We are planning on releasing the project as a pip package once the core features
 `Python 3.7`
 
 ## Usage
-Run `python tetris.py` to start the program with the AI enabled. To disable AI use the option `-noai`.
+Run `python3 tetris.py` in the command prompt to start the program with the AI enabled. To disable AI run the command `python3 tetris.py -noai`.
 
