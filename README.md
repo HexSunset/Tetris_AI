@@ -14,8 +14,13 @@ Run `python3 tetris.py` in the command prompt to start the program with the AI e
 
 ## Controls
 `Esc` - quit game
+
 `Left arrow` - move falling piece left
+
 `Right arrow` - move falling piece right
+
 `Up arrow` - rotate falling piece
+
 `Down arrow` - make the falling piece drop faster
+
 `Space` - drop the falling piece all the way down
