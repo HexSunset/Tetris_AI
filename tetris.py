@@ -247,6 +247,8 @@ def runGame():
                         if not isValidPosition(board, fallingPiece, adjY=i):
                             break
                     fallingPiece['y'] += i - 1
+                    if isValidPosition(board, fallingPiece, adjY=1):
+                        fallingPiece['y'] += 1
                     addToBoard(board, fallingPiece)
                     score += removeCompleteLines(board)
                     level, fallFreq = calculateLevelAndFallFreq(score)
