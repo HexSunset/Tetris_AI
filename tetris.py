@@ -163,6 +163,9 @@ PIECES = {'S': S_SHAPE_TEMPLATE,
           'O': O_SHAPE_TEMPLATE,
           'T': T_SHAPE_TEMPLATE}
 
+piece_bag = list(PIECES)
+random.shuffle(piece_bag)
+
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT, BIGFONT
     global manual_mode
@@ -441,8 +444,14 @@ def calculateLevelAndFallFreq(score):
     return level, fallFreq
 
 def getNewPiece():
-    # return a random new piece in a random rotation and color
-    shape = random.choice(list(PIECES.keys()))
+    # return a new piece from the piece bag
+    global piece_bag
+    if piece_bag == []:
+        piece_bag = list(PIECES)
+        random.shuffle(piece_bag)
+
+    shape = piece_bag.pop(0)
+
     newPiece = {'shape': shape,
                 'rotation': random.randint(0, len(PIECES[shape]) - 1),
                 'x': int(BOARDWIDTH / 2) - int(TEMPLATEWIDTH / 2),
