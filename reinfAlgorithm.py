@@ -39,11 +39,11 @@ class nnAlgorithm():
         objective='policy_gradient', reward_estimation=dict(horizon=20)
         )
 
-    def train(n):
+    def train(self, n):
         for _ in range(n):
-            states = environment.reset()
-            terminal = False
+            self.states = self.environment.reset()
+            self.terminal = False
             while not terminal:
-                actions = agent.act(states=states)
-                states, terminal, reward = environment.execute(actions=actions)
-                agent.observe(terminal=terminal, reward=reward
+                self.actions = self.agent.act(states=states)
+                self.states, self.terminal, self.reward = self.environment.execute(actions=self.actions)
+                self.agent.observe(terminal=self.terminal, reward=self.reward)
