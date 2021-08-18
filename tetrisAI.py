@@ -24,27 +24,58 @@ class boardEval:
                 numberOfHoles += 1
         return numberOfHoles
 
-    def evalBoardState(self, board):
-        currentEval = 0
+    def getBoardState(self, board):
+        numLinesCleared = 0
         for y in range(BOARDHEIGHT):
             if isCompleteLine(board, y):
-                currentEval += boardEval.COMPLETELINEWEIGHT #add to currentEval if there are completed lines
+                numLinesCleared += boardEval.COMPLETELINEWEIGHT #calculate number of completed lines
 
-        averageColWidth = 0
+        totalColHeight = 0
+        numPits = 0
         for x in range(BOARDWIDTH):
-            averageColWidth += self.getColumnHeight(board, x)
-        averageColWidth /= BOARDWIDTH
-        currentEval += boardEval.HEIGHTWEIGHT * averageColWidth
+            totalColHeight += self.getColumnHeight(board, x) #calculate aggregate column height
+            if self.getColumnHeight(board, x) == 0:
+                numPits += 1
+        averageColHeight = totalColHeight/BOARDWIDTH
 
+        bumpiness = 0
         for x in range(BOARDWIDTH):
-            currentEval += abs(self.getColumnHeight(board, x) - averageColWidth) * boardEval.SPIKINESSWEIGHT #subtract from currentEval based on the "spikiness" of the board
+            bumpiness += abs(self.getColumnHeight(board, x) - averageColHeight) #calculate bumpiness of the board
         
         numberOfHoles = 0
+        numColsWithAtLeastOneHole = 0
         for x in range(BOARDWIDTH):
-            numberOfHoles += self.getNumberOfHoles(board, x)
-        currentEval += numberOfHoles * boardEval.HOLEWEIGHT
+            numberOfHoles += self.getNumberOfHoles(board, x) #calculate number of holes
+            if self.getNumberOfHoles(board, x) != 0:
+                numColsWithAtLeastOneHole += 1
+
+        rowTransitions = 0
+        for y in range(BOARDHEIGHT):
+            for x in range(BOARDWIDTH-1):
+                if (board[x][y] == BLANK) != (board[x+1][y] == BLANK): #if this tile has a block and the next tile doesn't have a block or od this tile doesn't have a block and the next tile does
+                    rowTransitions += 1
+
+        colTransitions = 0
+        for y in range(BOARDHEIGHT-1):
+            for x in range(BOARDWIDTH):
+                if (board[x][y] == BLANK) != (board[x][y+1] == BLANK): #if this tile has a block and the next tile doesn't have a block or od this tile doesn't have a block and the next tile does
+                    colTransitions += 1
         
-        return currentEval
+        deepestWell = 0
+        for x in range(BOARDWIDTH):
+            currentHeight = self.getColumnHeight(board, x)
+            if x == 0:
+                currentWell = self.getColumnHeight(board, x+1)-currentHeight
+            elif x == BOARDWIDTH-1:
+                currentWell = self.getColumnHeight(board, x-1)-currentHeight
+            else:
+                currentWell = max([self.getColumnHeight(board, x+1), self.getColumnHeight(board, x-1)])-currentHeight
+            if currentWell > deepestWell:
+                deepestWell = currentWell
+
+
+        
+        return [numLinesCleared, totalColHeight, numPits, bumpiness, numberOfHoles, numColsWithAtLeastOneHole, rowTransitions, colTransitions, deepestWell]
     
     # Returns the highest evaluated future state
     def returnBestState(self, piece, board):
