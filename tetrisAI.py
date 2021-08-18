@@ -1,4 +1,4 @@
-from tetris import *
+from gameLogic import *
 import random
 import copy
 
