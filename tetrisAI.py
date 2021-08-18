@@ -77,36 +77,62 @@ class boardEval:
         
         return [numLinesCleared, totalColHeight, numPits, bumpiness, numberOfHoles, numColsWithAtLeastOneHole, rowTransitions, colTransitions, deepestWell]
     
+    def evalState(self, board, brain):
+        stateVariables = self.getBoardState(board)
+        score = 0
+        for i in range(len(stateVariables)):
+            score += stateVariables[i] * brain[i]
+        
+        return score
+
     # Returns the highest evaluated future state
     def returnBestState(self, piece, board):
+        testBrain = [1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
         evaluations = {}
         bestState = None
-        old_x = piece['x']
+        start_x = piece['x']
         old_y = piece['y']
         for r in range(len(PIECES[piece['shape']])): 
             piece['rotation'] = r
-            for x in range(-2, BOARDWIDTH + 2):
+            for target_x in range(-2, BOARDWIDTH + 2):
                 newBoard = copy.deepcopy(board)
                 piece['y'] = 0
-                piece['x'] = x
+                piece['x'] = start_x
                 if not isValidPosition(board, piece):
                     continue
+                curr_x = start_x
+                i = 0
+                while curr_x != target_x:
+                    i += 1
+                    if target_x > curr_x:
+                        curr_x += 1
+                    else:
+                        curr_x -= 1
+                    if not isValidPosition(board, piece, adjY=i, adjX=(curr_x - start_x)):
+                        curr_x = target_x + 1 # Make sure they don't match
+                        break
+                if curr_x != target_x:
+                    continue
+                piece['x'] = target_x
                 for i in range(1, BOARDHEIGHT):
                     if not isValidPosition(board, piece, adjY=i):
                         break
                 piece['y'] += i - 1
 
-
                 addToBoard(newBoard, piece)
-                evaluations[(x, r)] = self.evalBoardState(newBoard)
+                evaluations[(target_x, r)] = self.evalState(newBoard, testBrain)
 
                 if bestState == None:
-                    bestState = (x, r)
+                    bestState = (target_x, r)
                 else:
-                    if evaluations[(x, r)] > evaluations[bestState]:
-                        bestState = (x, r)
-        piece['x'] = old_x
+                    if evaluations[(target_x, r)] > evaluations[bestState]:
+                        bestState = (target_x, r)
+        piece['x'] = start_x
         piece['y'] = old_y
+        print(PIECES[piece['shape']][piece['rotation']])
+        print(board)
+
+        print(evaluations)
         return bestState
 
 class gameHandler:
@@ -115,6 +141,7 @@ class gameHandler:
         self.be = boardEval()
         self.piece = piece
         self.board = board
+
         self.desiredX, self.desiredRot = self.be.returnBestState(piece, board)
 
     def movePieceToPosition(self, pieceX): #returns -1 if moving left, 1 if moving right, and 0 if the x coordinate is correct
@@ -142,7 +169,10 @@ class gameHandler:
         self.board = board
         #self.setDesiredX()
         #self.setDesiredRot()
-        self.desiredX, self.desiredRot = self.be.returnBestState(self.piece, self.board)
+        self.bestState = self.be.returnBestState(self.piece, self.board)
+        if self.bestState == None: #No valid moves
+            self.bestState = (self.piece['x'], self.piece['rotation'])
+        self.desiredX, self.desiredRot = self.bestState
         
 
 
