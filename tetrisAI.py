@@ -9,6 +9,9 @@ class boardEval:
     HOLEWEIGHT = -0.2
     HEIGHTWEIGHT = -100
 
+    def __init__(self, brain):
+        self.brain = brain
+
     def getColumnHeight(self, board, x):
         for y in range(len(board[x])):
             if board[x][y] != BLANK:
@@ -87,7 +90,6 @@ class boardEval:
 
     # Returns the highest evaluated future state
     def returnBestState(self, piece, board):
-        testBrain = [1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
         evaluations = {}
         bestState = None
         start_x = piece['x']
@@ -120,7 +122,7 @@ class boardEval:
                 piece['y'] += i - 1
 
                 addToBoard(newBoard, piece)
-                evaluations[(target_x, r)] = self.evalState(newBoard, testBrain)
+                evaluations[(target_x, r)] = self.evalState(newBoard, self.brain)
 
                 if bestState == None:
                     bestState = (target_x, r)
@@ -137,8 +139,8 @@ class boardEval:
 
 class gameHandler:
     
-    def __init__(self, piece, board):
-        self.be = boardEval()
+    def __init__(self, piece, board, brain):
+        self.be = boardEval(brain)
         self.piece = piece
         self.board = board
 
