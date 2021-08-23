@@ -19,6 +19,7 @@ class Game():
         this.movingLeft = False
         this.movingRight = False
         this.score = 0
+        this.lines = 0
         this.level, this.fallFreq = calculateLevelAndFallFreq(this.score)
 
         this.fallingPiece = getNewPiece()
@@ -67,8 +68,10 @@ class Game():
                         if isValidPosition(this.board, this.fallingPiece, adjY=1):
                             this.fallingPiece['y'] += 1
                         addToBoard(this.board, this.fallingPiece)
-                        this.score += removeCompleteLines(this.board)
-                        this.level, this.fallFreq = calculateLevelAndFallFreq(this.score)
+                        this.scoreChange, this.linesChange = updateScore(this.board, this.level)
+                        this.score += this.scoreChange
+                        this.lines += this.linesChange
+                        this.level, this.fallFreq = calculateLevelAndFallFreq(this.lines)
                         this.fallingPiece = None
                 
                 if this.movingRight:
@@ -187,7 +190,7 @@ class Game():
             # drawing everything on the screen
             fillBG()
             drawBoard(this.board)
-            drawStatus(this.score, this.level)
+            drawStatus(this.score, this.lines, this.level)
             drawNextPiece(this.nextPiece)
             if this.fallingPiece != None:
                 drawPiece(this.fallingPiece)

@@ -239,6 +239,15 @@ def calculateLevelAndFallFreq(score):
     fallFreq = 0.27 - (level * 0.02)
     return level, fallFreq
 
+def updateScore(board, level):
+    # Returns change in score and cleared lines
+    basePoints = {1: 40, 2: 100, 3: 300, 4: 1200}
+    lines = removeCompleteLines(board)
+    if lines == 0:
+        return (0,0)
+    scoreChange = basePoints[lines] * (level + 1)
+    return (scoreChange, lines)
+
 def getNewPiece():
     # return a new piece from the piece bag
     global piece_bag
@@ -350,17 +359,23 @@ def drawBoard(board):
             drawBox(x, y, board[x][y])
 
 
-def drawStatus(score, level):
+def drawStatus(score, lines, level):
     # draw the score text
     scoreSurf = BASICFONT.render('Score: %s' % score, True, TEXTCOLOR)
     scoreRect = scoreSurf.get_rect()
     scoreRect.topleft = (WINDOWWIDTH - 150, 20)
     DISPLAYSURF.blit(scoreSurf, scoreRect)
 
+    # draw the lines text
+    linesSurf = BASICFONT.render('Lines: %s' % lines, True, TEXTCOLOR)
+    linesRect = linesSurf.get_rect()
+    linesRect.topleft = (WINDOWWIDTH - 150, 50)
+    DISPLAYSURF.blit(linesSurf, linesRect)
+
     # draw the level text
     levelSurf = BASICFONT.render('Level: %s' % level, True, TEXTCOLOR)
     levelRect = levelSurf.get_rect()
-    levelRect.topleft = (WINDOWWIDTH - 150, 50)
+    levelRect.topleft = (WINDOWWIDTH - 150, 80)
     DISPLAYSURF.blit(levelSurf, levelRect)
 
 
@@ -381,7 +396,7 @@ def drawNextPiece(piece):
     # draw the "next" text
     nextSurf = BASICFONT.render('Next:', True, TEXTCOLOR)
     nextRect = nextSurf.get_rect()
-    nextRect.topleft = (WINDOWWIDTH - 120, 80)
+    nextRect.topleft = (WINDOWWIDTH - 120, 110)
     DISPLAYSURF.blit(nextSurf, nextRect)
     # draw the "next" piece
-    drawPiece(piece, pixelx=WINDOWWIDTH-120, pixely=100)
+    drawPiece(piece, pixelx=WINDOWWIDTH-120, pixely=130)
