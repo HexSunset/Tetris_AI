@@ -40,7 +40,7 @@ class Game():
                 this.lastFallTime = time.time() # reset lastFallTime
 
                 if not isValidPosition(this.board, this.fallingPiece):
-                    return # can't fit a new piece on the board, so game over
+                    return this.score # can't fit a new piece on the board, so game over
                 this.gh.newPiece(this.fallingPiece, this.board)
 
             checkForQuit()
@@ -216,7 +216,8 @@ def main():
 #            pygame.mixer.music.load('tetrisc.mid')
 #        pygame.mixer.music.play(-1, 0.0)
 #        pygame.mixer.music.stop()
-        game.runGame()
+        score = game.runGame()
+        print("Score:",score)
         showTextScreen('Game Over')
 
 if __name__ == '__main__':
