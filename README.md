@@ -26,3 +26,4 @@ Run `python3 tetris.py` in the command prompt to start the program with the AI e
 `Down arrow` - make the falling piece drop faster
 
 `Space` - drop the falling piece all the way down
+
