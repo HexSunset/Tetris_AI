@@ -40,7 +40,8 @@ class Game():
                 self.lastFallTime = time.time() # reset lastFallTime
 
                 if not isValidPosition(self.board, self.fallingPiece):
-                    return self.score # can't fit a new piece on the board, so game over
+                    #pygame.quit()
+                    return [self.score, self.lines] # can't fit a new piece on the board, so game over
                 self.gh.newPiece(self.fallingPiece, self.board)
 
             checkForQuit()

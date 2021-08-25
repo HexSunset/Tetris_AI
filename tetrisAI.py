@@ -131,10 +131,10 @@ class boardEval:
                         bestState = (target_x, r)
         piece['x'] = start_x
         piece['y'] = old_y
-        print(PIECES[piece['shape']][piece['rotation']])
-        print(board)
+        #print(PIECES[piece['shape']][piece['rotation']])
+        #print(board)
 
-        print(evaluations)
+        #print(evaluations)
         return bestState
 
 class gameHandler:

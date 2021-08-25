@@ -3,7 +3,7 @@ from pygame.locals import *
 from game import *
 
 
-FPS = 25
+FPS = 0
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 BOXSIZE = 20
