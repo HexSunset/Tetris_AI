@@ -4,20 +4,41 @@ from agent import Agent
 import random
 
 class Evolution():
-    def __init__(self, genSize, genCount = 5):
-        self.defaultBrain = [1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
+    def __init__(self, genSize, genCount = 4):
+        file = open("evolutiondata.txt", "a")
+        self.defaultBrain = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.genSize = genSize
         print("1. generation")
+        file.write("1. generation\n")
         self.gen = self.createFirstGen(genSize)
+        for i in self.gen:
+            brain = ''
+            for j in i.brain:
+                brain = brain + str(j) + ", "
+            file.write(brain[:-2])
+            file.write("\n")
+            file.write("fitness: " + str(i.fitness))
+            file.write("\n\n")
         for i in range(1, genCount):
             print(str(i + 1) + ". generation")
+            file.write(str(i + 1) + ". generation\n")
             self.getElite()
             self.populateGeneration()
-            print("\n")
+            for i in self.gen:
+                brain = ''
+                for j in i.brain:
+                    brain = brain + str(j) + ", "
+                file.write(brain[:-2])
+                file.write("\n")
+                file.write("fitness: " + str(i.fitness))
+                file.write("\n\n")
         print("-----------------------------")
+        file.write("\n-----------------------------\n")
         for agent in self.gen:
             print(agent.brain)
             print(agent.fitness)
+            
+        file.close()
         return
 
     def createFirstGen(self, genSize):
