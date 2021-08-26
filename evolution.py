@@ -2,15 +2,34 @@ from hashlib import new
 from typing import DefaultDict
 from agent import Agent
 import random
+import sys
 
 class Evolution():
-    def __init__(self, genSize, genCount = 4):
+    def __init__(self):
         file = open("evolutiondata.txt", "a")
-        self.defaultBrain = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-        self.genSize = genSize
+        
+        # Check launch options for custom values
+        if len(sys.argv) > 1:
+            if '-b' in sys.argv:
+                self.defaultBrain = list(map(float,sys.argv[sys.argv.index('-b') + 1].split(',')))
+            else:
+                self.defaultBrain = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+            if '-s' in sys.argv:
+                self.genSize = int(sys.argv[sys.argv.index('-s') + 1])
+            else:
+                self.genSize = 10
+            if '-c' in sys.argv:
+                genCount = int(sys.argv[sys.argv.index('-c') + 1])
+            else:
+                genCount = 4
+        else:
+            self.defaultBrain = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+            self.genSize = 10
+            genCount = 4
+
         print("1. generation")
         file.write("1. generation\n")
-        self.gen = self.createFirstGen(genSize)
+        self.gen = self.createFirstGen(self.genSize)
         for i in self.gen:
             brain = ''
             for j in i.brain:
@@ -48,6 +67,10 @@ class Evolution():
         return newGen
     
     def populateGeneration(self):
+        # Show the agents that were taken over from the last generation
+        for agent in self.gen:
+            print(agent.brain)
+            print(agent.fitness)
         # Fill up the generation
         for i in range(self.genSize - len(self.gen)):
             self.gen.append(Agent(self.createChild(random.choice(self.gen).brain, random.choice(self.gen).brain)))
@@ -75,4 +98,4 @@ class Evolution():
 
 
 if __name__ == "__main__":
-    evolver = Evolution(10)
+    evolver = Evolution()
