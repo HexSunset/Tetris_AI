@@ -3,11 +3,6 @@ import random
 import copy
 
 class boardEval:
-    
-    COMPLETELINEWEIGHT = 10
-    SPIKINESSWEIGHT = -0.1
-    HOLEWEIGHT = -0.2
-    HEIGHTWEIGHT = -100
 
     def __init__(self, brain):
         self.brain = brain
@@ -31,7 +26,7 @@ class boardEval:
         numLinesCleared = 0
         for y in range(BOARDHEIGHT):
             if isCompleteLine(board, y):
-                numLinesCleared += boardEval.COMPLETELINEWEIGHT #calculate number of completed lines
+                numLinesCleared += 1 #calculate number of completed lines
 
         totalColHeight = 0
         numPits = 0
