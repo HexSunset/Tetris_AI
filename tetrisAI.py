@@ -26,7 +26,7 @@ class boardEval:
         numLinesCleared = 0
         for y in range(BOARDHEIGHT):
             if isCompleteLine(board, y):
-                numLinesCleared += boardEval.COMPLETELINEWEIGHT #calculate number of completed lines
+                numLinesCleared += 1 #calculate number of completed lines
 
         totalColHeight = 0
         numPits = 0

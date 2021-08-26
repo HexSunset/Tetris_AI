@@ -9,7 +9,7 @@ from tetrisAI import *
 from gameLogic import *
 
 class Game():
-    def runGame(self, brain, manual):
+    def runGame(self, brain = [1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0 ], manual = True):
         # setup variables for the start of the game
         self.board = getBlankBoard()
         self.lastMoveDownTime = time.time()
@@ -24,7 +24,6 @@ class Game():
 
         self.fallingPiece = getNewPiece()
         self.nextPiece = getNewPiece()
-
         self.gh = gameHandler(self.fallingPiece, self.board, brain)
         
 
@@ -177,8 +176,10 @@ class Game():
                     if not isValidPosition(self.board, self.fallingPiece, adjY=1):
                         # falling piece has landed, set it on the board
                         addToBoard(self.board, self.fallingPiece)
-                        self.score += removeCompleteLines(self.board)
-                        self.level, self.fallFreq = calculateLevelAndFallFreq(self.score)
+                        self.scoreChange, self.linesChange = updateScore(self.board, self.level)
+                        self.score += self.scoreChange
+                        self.lines += self.linesChange
+                        self.level, self.fallFreq = calculateLevelAndFallFreq(self.lines)
                         self.fallingPiece = None
                     else:
                         # piece did not land, just move the piece down
@@ -201,23 +202,9 @@ class Game():
 def main():
     initPygame()
     game = Game()
-    # Check for the noai launch option, disable ai
-    global manual_mode
-    if len(sys.argv) > 1: 
-        if sys.argv[1] == "-noai":
-            manual_mode = True
-    else:
-        manual_mode = False
-
     showTextScreen('Tetromino')
     while True: # game loop
-#        if random.randint(0, 1) == 0:
-#            pygame.mixer.music.load('tetrisb.mid')
-#        else:
-#            pygame.mixer.music.load('tetrisc.mid')
-#        pygame.mixer.music.play(-1, 0.0)
-#        pygame.mixer.music.stop()
-        score = game.runGame([1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0 ], manual_mode)
+        score = game.runGame()
         print("Score:",score)
         showTextScreen('Game Over')
 
