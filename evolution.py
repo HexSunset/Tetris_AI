@@ -38,6 +38,7 @@ class Evolution():
             file.write("\n")
             file.write("fitness: " + str(i.fitness))
             file.write("\n\n")
+
         for i in range(1, genCount):
             print(str(i + 1) + ". generation")
             file.write(str(i + 1) + ". generation\n")
@@ -73,7 +74,27 @@ class Evolution():
             print(agent.fitness)
         # Fill up the generation
         for i in range(self.genSize - len(self.gen)):
-            self.gen.append(Agent(self.createChild(random.choice(self.gen).brain, random.choice(self.gen).brain)))
+
+            # Probability distribution for parents
+            roll = random.uniform(0,1)
+            parentA = None
+            parentB = None
+            for i in range(len(self.gen)):
+                if roll > 0.5**(i+1):
+                    parentA = self.gen[i]
+                    break
+            if parentA == None:
+                parentA = self.gen[len(self.gen)-1]
+
+            roll = random.uniform(0,1)
+            for i in range(len(self.gen)):
+                if roll > 0.5**(i+1):
+                    parentB = self.gen[i]
+                    break
+            if parentB == None:
+                parentB = self.gen[len(self.gen)-1]
+
+            self.gen.append(Agent(self.createChild(parentA.brain, parentB.brain)))
     
     # Take in 2 parent brains, combine them into a child, mutate child
     def createChild(self, parentA, parentB):
