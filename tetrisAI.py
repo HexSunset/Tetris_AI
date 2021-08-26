@@ -3,11 +3,6 @@ import random
 import copy
 
 class boardEval:
-    
-    COMPLETELINEWEIGHT = 10
-    SPIKINESSWEIGHT = -0.1
-    HOLEWEIGHT = -0.2
-    HEIGHTWEIGHT = -100
 
     def __init__(self, brain):
         self.brain = brain
