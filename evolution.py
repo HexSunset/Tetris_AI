@@ -6,7 +6,7 @@ import sys
 
 class Evolution():
     def __init__(self):
-        file = open("evolutiondata.txt", "a")
+        self.file = open("evolutiondata.txt", "a")
         
         # Check launch options for custom values
         if len(sys.argv) > 1:
@@ -28,43 +28,25 @@ class Evolution():
             genCount = 50
 
         print("1. generation")
-        file.write("1. generation\n")
+        self.file.write("1. generation\n")
         self.gen = self.createFirstGen(self.genSize)
-        for i in self.gen:
-            brain = ''
-            for j in i.brain:
-                brain = brain + str(j) + ", "
-            file.write(brain[:-2])
-            file.write("\n")
-            file.write("fitness: " + str(i.fitness))
-            file.write("\n\n")
 
         for i in range(1, genCount):
             print(str(i + 1) + ". generation")
-            file.write(str(i + 1) + ". generation\n")
+            self.file.write("\n" + str(i + 1) + ". generation\n")
             self.getElite()
             self.populateGeneration()
-            for i in self.gen:
-                brain = ''
-                for j in i.brain:
-                    brain = brain + str(j) + ", "
-                file.write(brain[:-2])
-                file.write("\n")
-                file.write("fitness: " + str(i.fitness))
-                file.write("\n\n")
-        print("-----------------------------")
-        file.write("\n-----------------------------\n")
-        for agent in self.gen:
-            print(agent.brain)
-            print(agent.fitness)
             
-        file.close()
+        self.file.close()
         return
 
     def createFirstGen(self, genSize):
         newGen = []
         for i in range(genSize):
             newGen.append(Agent(self.createChild(self.defaultBrain, self.defaultBrain)))
+            self.file.write(str(newGen[-1].brain) + "\n")
+            self.file.write(str(newGen[-1].fitness) + "\n")
+            self.file.flush()
         return newGen
     
     def populateGeneration(self):
@@ -72,6 +54,9 @@ class Evolution():
         for agent in self.gen:
             print(agent.brain)
             print(agent.fitness)
+            self.file.write(str(agent.brain) + "\n")
+            self.file.write(str(agent.fitness) + "\n")
+
         # Fill up the generation
         for i in range(self.genSize - len(self.gen)):
 
@@ -95,7 +80,9 @@ class Evolution():
                 parentB = self.gen[len(self.gen)-1]
 
             self.gen.append(Agent(self.createChild(parentA.brain, parentB.brain)))
-    
+            self.file.write(str(self.gen[-1].brain) + "\n")
+            self.file.write(str(self.gen[-1].fitness) + "\n")
+            self.file.flush()
     # Take in 2 parent brains, combine them into a child, mutate child
     def createChild(self, parentA, parentB):
         childBrain = []
