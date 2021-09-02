@@ -162,12 +162,13 @@ piece_bag = list(PIECES)
 random.shuffle(piece_bag)
 
 def initPygame():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT, BIGFONT
+    global FPSCLOCK, DISPLAYSURF, BASICFONT, BIGFONT, SMALLFONT
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
     BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
+    SMALLFONT = pygame.font.Font('freesansbold.ttf', 10)
     BIGFONT = pygame.font.Font('freesansbold.ttf', 100)
     pygame.display.set_caption('Tetromino')
 
@@ -359,7 +360,7 @@ def drawBoard(board):
             drawBox(x, y, board[x][y])
 
 
-def drawStatus(score, lines, level):
+def drawStatus(score, lines, level, brain):
     # draw the score text
     scoreSurf = BASICFONT.render('Score: %s' % score, True, TEXTCOLOR)
     scoreRect = scoreSurf.get_rect()
@@ -377,6 +378,19 @@ def drawStatus(score, lines, level):
     levelRect = levelSurf.get_rect()
     levelRect.topleft = (WINDOWWIDTH - 150, 80)
     DISPLAYSURF.blit(levelSurf, levelRect)
+
+    names = ["numLinesCleared", "totalColHeight", "numPits", "bumpiness", "numberOfHoles", "numColsWithAtLeastOneHole", "rowTransitions", "colTransitions", "deepestWell"]
+
+    titleSurf = BASICFONT.render('Current brain:', True, TEXTCOLOR)
+    titleRect = titleSurf.get_rect()
+    titleRect.topleft = (15, 15)
+    DISPLAYSURF.blit(titleSurf, titleRect)
+
+    for i in range(len(brain)):
+        statSurf = SMALLFONT.render('%s: %s' % (names[i], brain[i]), True, TEXTCOLOR)
+        statRect = statSurf.get_rect()
+        statRect.topleft = (30, 40+i*15)
+        DISPLAYSURF.blit(statSurf, statRect)
 
 
 def drawPiece(piece, pixelx=None, pixely=None):

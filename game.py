@@ -192,7 +192,7 @@ class Game():
             # drawing everything on the screen
             fillBG()
             drawBoard(self.board)
-            drawStatus(self.score, self.lines, self.level)
+            drawStatus(self.score, self.lines, self.level, brain)
             drawNextPiece(self.nextPiece)
             if self.fallingPiece != None:
                 drawPiece(self.fallingPiece)

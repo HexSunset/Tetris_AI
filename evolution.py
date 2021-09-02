@@ -24,8 +24,8 @@ class Evolution():
                 genCount = 4
         else:
             self.defaultBrain = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-            self.genSize = 10
-            genCount = 4
+            self.genSize = 15
+            genCount = 50
 
         print("1. generation")
         file.write("1. generation\n")
