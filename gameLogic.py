@@ -387,7 +387,7 @@ def drawStatus(score, lines, level, brain):
     DISPLAYSURF.blit(titleSurf, titleRect)
 
     for i in range(len(brain)):
-        statSurf = SMALLFONT.render('%s: %s' % (names[i], brain[i]), True, TEXTCOLOR)
+        statSurf = SMALLFONT.render('%s: %s' % (names[i], round(brain[i], 2)), True, TEXTCOLOR)
         statRect = statSurf.get_rect()
         statRect.topleft = (30, 40+i*15)
         DISPLAYSURF.blit(statSurf, statRect)
