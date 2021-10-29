@@ -20,7 +20,7 @@ class Game():
         self.movingRight = False
         self.score = 0
         self.lines = 0
-        self.level, self.fallFreq = calculateLevelAndFallFreq(self.score)
+        self.level, self.fallFreq = calculateLevelAndFallFreq(self.lines)
 
         self.fallingPiece = getNewPiece()
         self.nextPiece = getNewPiece()

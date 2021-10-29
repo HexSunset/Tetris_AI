@@ -233,10 +233,10 @@ def checkForQuit():
         pygame.event.post(event) # put the other KEYUP event objects back
 
 
-def calculateLevelAndFallFreq(score):
-    # Based on the score, return the level the player is on and
+def calculateLevelAndFallFreq(lines):
+    # Based on the cleared lines, return the level the player is on and
     # how many seconds pass until a falling piece falls one space.
-    level = int(score / 10) + 1
+    level = int(lines / 10)
     fallFreq = 0.27 - (level * 0.02)
     return level, fallFreq
 
